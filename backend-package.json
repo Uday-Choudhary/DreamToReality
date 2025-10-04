@@ -1,0 +1,17 @@
+{
+  "name": "sentient-goals-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Sentient Goals roadmap generation",
+  "main": "render-server.js",
+  "scripts": {
+    "start": "node render-server.js",
+    "dev": "node render-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

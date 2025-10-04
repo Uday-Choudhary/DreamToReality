@@ -5,7 +5,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Sparkles, Lightbulb } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 interface DreamInputProps {
   onRoadmapGenerated: (roadmap: any) => void;
@@ -42,11 +41,23 @@ export const DreamInput = ({ onRoadmapGenerated }: DreamInputProps) => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('generate-roadmap', {
-        body: { dream, category }
+      // Use environment variable for API URL, fallback to localhost for development
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      
+      const response = await fetch(`${apiUrl}/generate-roadmap`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ dream, category })
       });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
 
       if (data.error) {
         throw new Error(data.error);
